@@ -37,4 +37,15 @@ interface CategoryDao {
     @Query("SELECT * FROM todotask WHERE categoryId = :categoryId")
     suspend fun getTodoTasksByCategoryId(categoryId: Int): List<TodoWithCategory>
 
+
+    // Function to update any field of TodoEntity
+    @Query("UPDATE todotask SET taskName = :taskName, date = :date, time = :time, categoryId = :categoryId, status = :status WHERE id = :todoId")
+    suspend fun updateTodo(
+        todoId: Int,
+        taskName: String,
+        date: String,
+        time: String,
+        categoryId: Int,
+        status: Boolean
+    )
 }

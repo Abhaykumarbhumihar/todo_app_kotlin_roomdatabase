@@ -8,7 +8,9 @@ plugins {
 android {
     namespace = "com.todoappkotlin"
     compileSdk = 34
-
+    buildFeatures {
+        viewBinding = true
+    }
     defaultConfig {
         applicationId = "com.todoappkotlin"
         minSdk = 24
@@ -45,6 +47,10 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
+    //Dimen
+    implementation("com.intuit.ssp:ssp-android:1.0.6")
+    implementation("com.intuit.sdp:sdp-android:1.0.6")
 
     // Room components
     implementation("androidx.room:room-runtime:2.6.1")

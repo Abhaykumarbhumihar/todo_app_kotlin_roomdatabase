@@ -3,73 +3,34 @@ package com.todoappkotlin
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.todoappkotlin.category.CategoryCallback
 import com.todoappkotlin.category.repository.CategoryRepository
+import com.todoappkotlin.category.view.ActiveTodoListFragment
 import com.todoappkotlin.category.viewmodel.CategoryViewModelFactory
 import com.todoappkotlin.category.viewmodel.CateogryViewModel
+import com.todoappkotlin.databinding.ActivityMainBinding
 import com.todoappkotlin.room.AppDataBase
 import com.todoappkotlin.room.CategoryEntity
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var cateogryViewModel: CateogryViewModel
-    private lateinit var categoryRepository: CategoryRepository
+    lateinit var binding: ActivityMainBinding
+    var fragmentManager: FragmentManager? = null
+    var fragmentTransaction: FragmentTransaction? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val categoryDao = AppDataBase.getDatabase(applicationContext).categoryDao()
-        categoryRepository = CategoryRepository(categoryDao)
-
-        val viewModelFactory = CategoryViewModelFactory(categoryRepository)
-        cateogryViewModel =
-            ViewModelProvider(this, viewModelFactory)[CateogryViewModel::class.java]
-
-        addCateogryData()
-
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        addfragment(ActiveTodoListFragment())
     }
 
-    private fun refreshCategoryList() {
-        cateogryViewModel.getCategoryList(object : CategoryCallback<List<CategoryEntity>> {
-            override fun onSuccess(categories: List<CategoryEntity>) {
-                runOnUiThread {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Fetched ${categories.size} categories",
-                        Toast.LENGTH_SHORT
-                    ).show()
 
-                }
-            }
-
-            override fun onError(exception: Exception) {
-                runOnUiThread {
-                    Toast.makeText(
-                        this@MainActivity, "Error: ${exception.message}", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        })
+    fun addfragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().replace(R.id.framelayout, fragment)
+            .addToBackStack(null).commit()
     }
 
-    private fun addCateogryData() {
-        val newCategory = CategoryEntity(categoryName = "SDF SDF ")
-        cateogryViewModel.addCategory(newCategory, object : CategoryCallback<String> {
-            override fun onSuccess(categories: String) {
-                runOnUiThread {
-                    Toast.makeText(this@MainActivity, categories, Toast.LENGTH_SHORT).show()
-                    refreshCategoryList()
-                }
-            }
-
-            override fun onError(exception: Exception) {
-                runOnUiThread {
-                    Toast.makeText(
-                        this@MainActivity, "Error: ${exception.message}", Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        })
-    }
 }

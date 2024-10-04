@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_add_todo"
+        android:icon="@drawable/add_icon"
+        android:title="Add Task"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_list"
+        android:icon="@drawable/task_list"
+        android:title="All Todo List"
+        app:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/action_setting"
+        android:icon="@drawable/setting"
+        android:title="All Todo List"
+        app:showAsAction="collapseActionView" />
+</menu>

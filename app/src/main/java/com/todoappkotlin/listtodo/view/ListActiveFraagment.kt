@@ -9,6 +9,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +32,8 @@ class ListActiveFragment : Fragment() {
     private lateinit var todoAdapter: TodoAdapter
 
     private var _binding: FragmentListActiveFraagmentBinding? = null
+
+    lateinit var adapterlistener: TodoAdapter.OnTodoItemCheckedChangeListener
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -48,8 +51,21 @@ class ListActiveFragment : Fragment() {
         (requireActivity() as AppCompatActivity).supportActionBar?.title = "Todo Work"
         setHasOptionsMenu(true)
 
+
+        adapterlistener = object : TodoAdapter.OnTodoItemCheckedChangeListener {
+            override fun onTodoItemCheckedChange(
+                todoId: Int,
+                isChecked: Boolean,
+                currentData: TodoWithCategory
+            ) {
+
+                updateStatusOfTask(todoId, isChecked)
+
+
+            }
+        }
         // Initialize RecyclerView and Adapter
-        todoAdapter = TodoAdapter(emptyList()) // Start with an empty list
+        todoAdapter = TodoAdapter(emptyList(), adapterlistener) // Start with an empty list
         binding.rvtodolist.layoutManager = LinearLayoutManager(requireContext())
         binding.rvtodolist.adapter = todoAdapter
 
@@ -64,6 +80,25 @@ class ListActiveFragment : Fragment() {
         getTodoList()
     }
 
+
+    private fun updateStatusOfTask(todoId: Int, status: Boolean) {
+        todoListViewModel.updateTodoStatus(todoId, status, object : TodoListCallBack<String> {
+            override fun onSuccess(categories: String) {
+
+                requireActivity().runOnUiThread {
+                    Toast.makeText(context, categories, Toast.LENGTH_LONG).show()
+                    getTodoList()
+                }
+            }
+
+            override fun onError(exception: Exception) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(context, exception.message!!, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+    }
+
     override fun onPause() {
         super.onPause()
         onStart()
@@ -75,7 +110,7 @@ class ListActiveFragment : Fragment() {
             override fun onSuccess(categories: List<TodoWithCategory>) {
                 requireActivity().runOnUiThread {
                     Log.w("LIST ACTIVE  onSuccess", "${categories.size}")
-                    categories?.let {
+                    categories.let {
                         todoAdapter.setTodoList(categories)
                     }
 

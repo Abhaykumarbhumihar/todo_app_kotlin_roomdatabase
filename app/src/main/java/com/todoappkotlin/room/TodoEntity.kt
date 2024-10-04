@@ -24,7 +24,8 @@ data class TodoEntity(
     val date: String = "", // Task date
     val time: String = "", // Task time
     val taskName: String, // Name of the task
-    val categoryId: Int // Foreign key (the ID of a CategoryEntity)
+    val categoryId: Int, // Foreign key (the ID of a CategoryEntity)
+    var status:Boolean=false //Task status (false means pending true means complete)
 )
 
 

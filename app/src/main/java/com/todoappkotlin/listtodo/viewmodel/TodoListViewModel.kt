@@ -23,4 +23,21 @@ class TodoListViewModel(private val respositroy: TodoListRepository) : ViewModel
         }
     }
 
+
+    fun updateTodoStatus(todoId: Int, status: Boolean, callback: TodoListCallBack<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                respositroy.updateTodoStatus(todoId, status)
+                if(status){
+                    callback.onSuccess("Task updated as complete")
+                }else{
+                    callback.onSuccess("Task updated as in-complete")
+                }
+
+            } catch (e: Exception) {
+                callback.onError(e)
+            }
+        }
+    }
+
 }

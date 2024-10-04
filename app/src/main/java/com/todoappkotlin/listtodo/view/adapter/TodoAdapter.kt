@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.todoappkotlin.databinding.TodoActiveListBinding
 import com.todoappkotlin.room.TodoWithCategory
 
-class TodoAdapter(private var todoList: List<TodoWithCategory>) :
+class TodoAdapter(private var todoList: List<TodoWithCategory>,  private val listener: OnTodoItemCheckedChangeListener ) :
     RecyclerView.Adapter<TodoAdapter.TodoViewHolder>() {
 
     inner class TodoViewHolder(private val binding: TodoActiveListBinding) :
@@ -16,16 +16,18 @@ class TodoAdapter(private var todoList: List<TodoWithCategory>) :
         fun bind(todoWithCategory: TodoWithCategory) {
             binding.todoName.text = todoWithCategory.todo.taskName
             binding.todoDate.text =
-                "Due: ${todoWithCategory.todo.date}" // Assuming date is part of TodoEntity
+                "Due: ${todoWithCategory.todo.date}"
             binding.todoTime.text =
-                "Time: ${todoWithCategory.todo.time}" // Assuming time is part of TodoEntity
+                "Time: ${todoWithCategory.todo.time}"
 
-            // Set checkbox state if needed
-            binding.todoCheckbox.isChecked = false // Set to true if the task is completed
 
-            // Optional: If you want to handle checkbox changes
-            binding.todoCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
-                // Handle checkbox state change if necessary
+
+            binding.todoCheckbox.isChecked = todoWithCategory.todo.status
+
+
+
+            binding.todoCheckbox.setOnCheckedChangeListener { _, isChecked ->
+                listener.onTodoItemCheckedChange(todoWithCategory.todo.id, isChecked,todoWithCategory )
             }
         }
     }
@@ -48,5 +50,9 @@ class TodoAdapter(private var todoList: List<TodoWithCategory>) :
     fun setTodoList(newTodoList: List<TodoWithCategory>) {
         todoList = newTodoList
         notifyDataSetChanged() // Notify that data has changed
+    }
+
+    interface OnTodoItemCheckedChangeListener {
+        fun onTodoItemCheckedChange(todoId: Int, isChecked: Boolean,currentData: TodoWithCategory)
     }
 }

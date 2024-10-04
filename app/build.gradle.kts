@@ -52,6 +52,7 @@ dependencies {
     implementation("com.intuit.ssp:ssp-android:1.0.6")
     implementation("com.intuit.sdp:sdp-android:1.0.6")
 
+
     // Room components
     implementation("androidx.room:room-runtime:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")

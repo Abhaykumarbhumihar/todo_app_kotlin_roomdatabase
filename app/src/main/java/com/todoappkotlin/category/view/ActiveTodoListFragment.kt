@@ -10,12 +10,16 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.todoappkotlin.R
 import com.todoappkotlin.category.CategoryCallback
 import com.todoappkotlin.category.repository.CategoryRepository
+import com.todoappkotlin.category.view.adapter.CategorySpinnerAdapter
+import com.todoappkotlin.category.view.dialog.CategoryDialogFragment
 import com.todoappkotlin.category.viewmodel.CategoryViewModelFactory
 import com.todoappkotlin.category.viewmodel.CateogryViewModel
 import com.todoappkotlin.databinding.FragmentActiveTodoListBinding
@@ -24,7 +28,7 @@ import com.todoappkotlin.room.CategoryEntity
 import java.util.Calendar
 
 
-class ActiveTodoListFragment : Fragment() {
+class ActiveTodoListFragment : Fragment(), CategoryDialogFragment.CategoryDialogListener {
     private var _binding: FragmentActiveTodoListBinding? = null
     private val binding get() = _binding!!
 
@@ -35,7 +39,10 @@ class ActiveTodoListFragment : Fragment() {
     private lateinit var cateogryViewModel: CateogryViewModel
     private lateinit var categoryRepository: CategoryRepository
 
-    lateinit var categorylist:List<CategoryEntity>
+    lateinit var categorylist: List<CategoryEntity>
+
+    private var isCategorySelected = false // Track if a valid category is selected
+    private var lastSelectedPosition = 0 // Track the last selected position
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -86,6 +93,12 @@ class ActiveTodoListFragment : Fragment() {
         binding.cleartime.setOnClickListener {
             clearTime()
         }
+
+        //add list name dialog
+        binding.addCateogry.setOnClickListener {
+            showAddCategoryDialog()
+        }
+        setupSpinnerListener()
     }
 
     private fun showDatePicker() {
@@ -111,11 +124,10 @@ class ActiveTodoListFragment : Fragment() {
         cateogryViewModel.getCategoryList(object : CategoryCallback<List<CategoryEntity>> {
             override fun onSuccess(categories: List<CategoryEntity>) {
                 requireActivity().runOnUiThread {
-                    Toast.makeText(
-                        context, "Fetched ${categories.size} categories", Toast.LENGTH_SHORT
-                    ).show()
-
-                    //here categoreis list need to show in
+                    categorylist = categories // Store the categories for later use
+                    val categoryNames = mutableListOf("Select Task Category") // Add a placeholder
+                    categoryNames.addAll(categories.map { it.categoryName }) // Append actual categories
+                    setupCategorySpinner(categoryNames) // Set up spinner with category names
 
                 }
             }
@@ -167,6 +179,57 @@ class ActiveTodoListFragment : Fragment() {
         binding.cleartime.visibility = View.GONE // Hide clear time button
     }
 
+    private fun setupCategorySpinner(categoryNames: List<String>) {
+        val adapter = CategorySpinnerAdapter(requireContext(), categoryNames)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.categorySpinner.adapter = adapter // Set the adapter to the Spinner
+    }
+
+    private fun showAddCategoryDialog() {
+        val dialog = CategoryDialogFragment()
+        dialog.setListener(this)
+        dialog.show(parentFragmentManager, "CategoryDialogFragment")
+    }
+
+    private fun setupSpinnerListener() {
+        binding.categorySpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>, view: View, position: Int, id: Long
+                ) {
+                    val selectedCategory = parent.getItemAtPosition(position) as String
+
+                    // If the placeholder is selected
+                    if (selectedCategory == "Select Task Category" && !isCategorySelected) {
+                        // Do nothing; it's the initial selection
+                    } else if (selectedCategory == "Select Task Category" && isCategorySelected) {
+                        // Show a message that the placeholder cannot be selected again
+                        Toast.makeText(
+                            requireContext(),
+                            "You cannot select 'Select Task Category' again.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        // Re-select the last valid category (find the last selected category)
+                        binding.categorySpinner.setSelection(getLastSelectedPosition())
+                    } else {
+                        // Valid category selected
+                        isCategorySelected = true // Mark that a valid category has been selected
+                        // Perform your action based on the selected category
+
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+
+                }
+            }
+    }
+
+
+    private fun getLastSelectedPosition(): Int {
+        return lastSelectedPosition
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.home_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -193,4 +256,27 @@ class ActiveTodoListFragment : Fragment() {
         _binding = null // Clean up binding reference
     }
 
+    override fun onCategoryAdded(categoryName: String) {
+        addCateogryData(categoryName)
+    }
+
+
+    private fun addCateogryData(categoryName: String) {
+        val newCategory = CategoryEntity(categoryName = "$categoryName")
+        cateogryViewModel.addCategory(newCategory, object : CategoryCallback<String> {
+            override fun onSuccess(categories: String) {
+                requireActivity().runOnUiThread {
+                    refreshCategoryList()
+                }
+            }
+
+            override fun onError(exception: Exception) {
+                requireActivity().runOnUiThread {
+                    Toast.makeText(
+                        context, "Error: ${exception.message}", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+    }
 }

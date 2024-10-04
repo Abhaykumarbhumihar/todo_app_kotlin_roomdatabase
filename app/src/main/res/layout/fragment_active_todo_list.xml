@@ -236,11 +236,12 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/addCateogry"
             android:layout_width="@dimen/_34sdp"
             android:layout_height="@dimen/_34sdp"
             android:layout_marginStart="@dimen/_4sdp"
             android:layout_marginEnd="@dimen/_4sdp"
-            android:src="@drawable/calendar_month" />
+            android:src="@drawable/add_list" />
 
     </LinearLayout>
 

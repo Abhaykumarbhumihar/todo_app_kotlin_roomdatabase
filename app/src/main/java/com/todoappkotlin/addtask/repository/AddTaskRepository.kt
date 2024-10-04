@@ -1,4 +1,4 @@
-package com.todoappkotlin.category.repository
+package com.todoappkotlin.addtask.repository
 
 import com.todoappkotlin.room.CategoryDao
 import com.todoappkotlin.room.CategoryEntity

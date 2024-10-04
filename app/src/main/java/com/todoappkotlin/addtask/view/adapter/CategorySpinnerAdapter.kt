@@ -1,4 +1,4 @@
-package com.todoappkotlin.category.view.adapter
+package com.todoappkotlin.addtask.view.adapter
 
 import android.content.Context
 import android.view.LayoutInflater

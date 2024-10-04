@@ -6,17 +6,33 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     android:orientation="vertical"
-    tools:context=".category.view.ActiveTodoListFragment">
+    tools:context=".addtask.view.AddTodoTaskFragment">
 
-    <androidx.appcompat.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true"
         android:background="@color/colorPrimary"
-        android:elevation="@dimen/_6sdp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:titleTextColor="@color/colorWhite" />
+        android:elevation="@dimen/_6sdp">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Add Todo"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/_18ssp"
+            android:fontFamily="@font/avenirnextltpro_bold" />
+
+        <ImageButton
+            android:id="@+id/toolbar_back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:background="?attr/selectableItemBackground"
+            android:src="@drawable/arrow_back" /> <!-- Use your back arrow icon -->
+    </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"

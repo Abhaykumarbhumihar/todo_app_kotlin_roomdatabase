@@ -1,9 +1,9 @@
-package com.todoappkotlin.category.viewmodel
+package com.todoappkotlin.addtask.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.todoappkotlin.category.CategoryCallback
-import com.todoappkotlin.category.repository.AddTaskRepository
+import com.todoappkotlin.addtask.callback.CategoryCallback
+import com.todoappkotlin.addtask.repository.AddTaskRepository
 import com.todoappkotlin.room.CategoryEntity
 import com.todoappkotlin.room.TodoEntity
 import kotlinx.coroutines.Dispatchers

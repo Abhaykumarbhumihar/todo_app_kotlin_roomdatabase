@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.todoappkotlin.category.view.ActiveTodoListFragment
+import com.todoappkotlin.listtodo.view.ListActiveFragment
 import com.todoappkotlin.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        addfragment(ActiveTodoListFragment())
+        addfragment(ListActiveFragment())
     }
 
 

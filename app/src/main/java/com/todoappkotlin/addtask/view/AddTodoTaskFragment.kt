@@ -1,4 +1,4 @@
-package com.todoappkotlin.category.view
+package com.todoappkotlin.addtask.view
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -6,22 +6,18 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.todoappkotlin.R
-import com.todoappkotlin.category.CategoryCallback
-import com.todoappkotlin.category.repository.AddTaskRepository
-import com.todoappkotlin.category.view.adapter.CategorySpinnerAdapter
-import com.todoappkotlin.category.view.dialog.CategoryDialogFragment
-import com.todoappkotlin.category.viewmodel.AddTaskViewModelFactory
-import com.todoappkotlin.category.viewmodel.AddTaskViewModel
+import com.todoappkotlin.addtask.callback.CategoryCallback
+import com.todoappkotlin.addtask.repository.AddTaskRepository
+import com.todoappkotlin.addtask.view.adapter.CategorySpinnerAdapter
+import com.todoappkotlin.addtask.view.dialog.CategoryDialogFragment
+import com.todoappkotlin.addtask.viewmodel.AddTaskViewModelFactory
+import com.todoappkotlin.addtask.viewmodel.AddTaskViewModel
 import com.todoappkotlin.databinding.FragmentActiveTodoListBinding
 import com.todoappkotlin.room.AppDataBase
 import com.todoappkotlin.room.CategoryEntity
@@ -29,7 +25,7 @@ import com.todoappkotlin.room.TodoEntity
 import java.util.Calendar
 
 
-class ActiveTodoListFragment : Fragment(), CategoryDialogFragment.CategoryDialogListener {
+class AddTodoTaskFragment : Fragment(), CategoryDialogFragment.CategoryDialogListener {
     private var _binding: FragmentActiveTodoListBinding? = null
     private val binding get() = _binding!!
 
@@ -58,11 +54,10 @@ class ActiveTodoListFragment : Fragment(), CategoryDialogFragment.CategoryDialog
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         // Set up Toolbar
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = "Todo Work"
-        setHasOptionsMenu(true)
-
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = ""
         val categoryDao = context?.let { AppDataBase.getDatabase(it).categoryDao() }
         categoryRepository = categoryDao?.let { AddTaskRepository(it) }!!
 
@@ -111,7 +106,7 @@ class ActiveTodoListFragment : Fragment(), CategoryDialogFragment.CategoryDialog
                 val duedate = binding.tvduedate.text.toString() + ""
                 val time = binding.tvtime.text.toString() + ""
                 val todo = TodoEntity(
-                    taskName = "Buy groceries",
+                    taskName = "$taskname",
                     categoryId = selectedCategoryIdForSaveInTodo!!,
                     date = duedate,
                     time = time
@@ -279,26 +274,6 @@ class ActiveTodoListFragment : Fragment(), CategoryDialogFragment.CategoryDialog
         return lastSelectedPosition
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.home_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_add_todo -> {
-                replaceFragment(AddTodoFraagment()) // Handle add todo action
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        parentFragmentManager.beginTransaction().replace(R.id.framelayout, fragment)
-            .addToBackStack(null).commit()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

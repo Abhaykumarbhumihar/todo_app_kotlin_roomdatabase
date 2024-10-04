@@ -5,7 +5,6 @@ import com.todoappkotlin.room.CategoryEntity
 
 class CategoryRepository(private val categoryDao: CategoryDao) {
 
-
     suspend fun getCategory(): List<CategoryEntity> {
         return categoryDao.getAllCategory()
     }

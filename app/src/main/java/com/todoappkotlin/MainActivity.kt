@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         val viewModelFactory = CategoryViewModelFactory(categoryRepository)
         cateogryViewModel =
-            ViewModelProvider(this, viewModelFactory).get(CateogryViewModel::class.java)
+            ViewModelProvider(this, viewModelFactory)[CateogryViewModel::class.java]
 
         addCateogryData()
 
@@ -46,9 +46,7 @@ class MainActivity : AppCompatActivity() {
             override fun onError(exception: Exception) {
                 runOnUiThread {
                     Toast.makeText(
-                        this@MainActivity,
-                        "Error: ${exception.message}",
-                        Toast.LENGTH_SHORT
+                        this@MainActivity, "Error: ${exception.message}", Toast.LENGTH_SHORT
                     ).show()
                 }
             }

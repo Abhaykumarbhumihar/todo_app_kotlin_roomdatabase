@@ -38,7 +38,7 @@
             android:visibility="visible" />
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/ed_email1"
+            android:id="@+id/edtaskname"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_36sdp"
             android:layout_marginStart="@dimen/_10sdp"
@@ -245,4 +245,29 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
+
+
+        <LinearLayout
+            android:id="@+id/ll_addtask"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_54sdp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorLightOrange"
+            android:gravity="center">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/avenirnextltpro_bold"
+                android:padding="@dimen/_2sdp"
+                android:text="Add Task"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/_14sdp" />
+        </LinearLayout>
+    </RelativeLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

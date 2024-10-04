@@ -3,12 +3,13 @@ package com.todoappkotlin.category.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todoappkotlin.category.CategoryCallback
-import com.todoappkotlin.category.repository.CategoryRepository
+import com.todoappkotlin.category.repository.AddTaskRepository
 import com.todoappkotlin.room.CategoryEntity
+import com.todoappkotlin.room.TodoEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class CateogryViewModel(private val repository: CategoryRepository) : ViewModel() {
+class AddTaskViewModel(private val repository: AddTaskRepository) : ViewModel() {
 
 
     fun addCategory(category: CategoryEntity, callback: CategoryCallback<String>) {
@@ -27,6 +28,18 @@ class CateogryViewModel(private val repository: CategoryRepository) : ViewModel(
             try {
                 val categoryList = repository.getCategory()
                 callback.onSuccess(categoryList)
+            } catch (e: Exception) {
+                callback.onError(e)
+            }
+
+        }
+    }
+
+    fun addTodoTask(todoEntity: TodoEntity, callback: CategoryCallback<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                repository.addTask(todoEntity)
+                callback.onSuccess("Task Added")
             } catch (e: Exception) {
                 callback.onError(e)
             }

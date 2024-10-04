@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 
 @Dao
 interface CategoryDao {
@@ -14,5 +15,15 @@ interface CategoryDao {
 
     @Query("SELECT * FROM category")
     suspend fun  getAllCategory():  List<CategoryEntity>
+
+
+    // Insert a Task (TodoEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTodoTask(todoEntity: TodoEntity)
+
+
+    @Transaction
+    @Query("SELECT * FROM todotask")
+    suspend fun getTodoTasksWithCategory(): List<TodoWithCategory>
 
 }
